@@ -1,6 +1,6 @@
 <h3 align="center">
   <a href="https://github.com/fastlane/fastlane/tree/master/fastlane">
-    <img src="../fastlane/assets/fastlane.png" width="150" />
+    <img src=".assets/fastlane.png" width="150" />
     <br />
     fastlane
   </a>
@@ -26,12 +26,12 @@ WatchBuild
 ============
 
 [![Twitter: @FastlaneTools](https://img.shields.io/badge/contact-@FastlaneTools-blue.svg?style=flat)](https://twitter.com/FastlaneTools)
-[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/fastlane/fastlane/blob/master/watchbuild/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/fastlane/watchbuild/blob/master/LICENSE)
 [![Gem](https://img.shields.io/gem/v/watchbuild.svg?style=flat)](http://rubygems.org/gems/watchbuild)
 
 ###### Get a notification once your iTunes Connect build is finished processing
 
-<img src="assets/screenshot.png" width=350>
+<img src=".assets/screenshot.png" width=350>
 
 When you upload a new binary from Xcode to iTunes Connect, you have to wait until it's done processing before you can submit it to the App Store.
 
@@ -79,7 +79,7 @@ For a list of available parameters and commands run
 
     watchbuild --help
 
-<img src="assets/terminal.png">
+<img src=".assets/terminal.png">
 
 ## How is my password stored?
 
