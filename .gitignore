@@ -1,0 +1,56 @@
+*.gem
+*.rbc
+/.config
+coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/test/tmp/
+/test/version_tmp/
+/tmp/
+rspec_logs.json
+test_output/
+.DS_STORE
+.keys
+
+## Specific to Android
+.gradle/
+*.iml
+local.properties
+
+## Specific to screengrab
+/screengrab/example/fastlane/metadata/
+
+## Specific to RubyMotion:
+.dat*
+.repl_history
+build/
+
+## Documentation cache and generated files:
+/.yardoc/
+/_yardoc/
+/doc/
+/rdoc/
+
+## Environment normalisation:
+/.bundle/
+/lib/bundler/man/
+
+# for a library or gem, you might want to ignore these files since the code is
+# intended to run in multiple environments; otherwise, check them in:
+Gemfile.lock
+.ruby-version
+.ruby-gemset
+
+# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
+.rvmrc
+
+# fastlane specific
+/*.itmsp
+.idea
+spec/fixtures/*.itmsp/*.png
+/integration
+**/report.xml
+**/.bundle
+fastlane/lib/fastlane/plugins/template/.rubocop.yml
+
