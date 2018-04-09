@@ -8,12 +8,17 @@ module WatchBuild
     # returns the path the newly created provisioning profile (in /tmp usually)
     def run
       FastlaneCore::PrintTable.print_values(config: WatchBuild.config,
-                                         hide_keys: [],
-                                             title: "Summary for WatchBuild #{WatchBuild::VERSION}")
+                                            hide_keys: [],
+                                            title: "Summary for WatchBuild #{WatchBuild::VERSION}")
 
       UI.message("Starting login with user '#{WatchBuild.config[:username]}'")
+
+      ENV['FASTLANE_ITC_TEAM_ID'] = WatchBuild.config[:itc_team_id] if WatchBuild.config[:itc_team_id]
+      ENV['FASTLANE_ITC_TEAM_NAME'] = WatchBuild.config[:itc_team_name] if WatchBuild.config[:itc_team_name]
+
       Spaceship::Tunes.login(WatchBuild.config[:username], nil)
-      UI.message("Successfully logged in")
+      Spaceship::Tunes.select_team
+      UI.message('Successfully logged in')
 
       start = Time.now
       build = wait_for_build(start)
@@ -32,17 +37,17 @@ module WatchBuild
           seconds_elapsed = (Time.now - start_time).to_i.abs
           case seconds_elapsed
           when 0..59
-            time_elapsed = Time.at(seconds_elapsed).utc.strftime "%S seconds"
+            time_elapsed = Time.at(seconds_elapsed).utc.strftime '%S seconds'
           when 60..3599
-            time_elapsed = Time.at(seconds_elapsed).utc.strftime "%M:%S minutes"
+            time_elapsed = Time.at(seconds_elapsed).utc.strftime '%M:%S minutes'
           else
-            time_elapsed = Time.at(seconds_elapsed).utc.strftime "%H:%M:%S hours"
+            time_elapsed = Time.at(seconds_elapsed).utc.strftime '%H:%M:%S hours'
           end
 
           UI.message("Waiting #{time_elapsed} for iTunes Connect to process the build #{build.train_version} (#{build.build_version})... this might take a while...")
         rescue => ex
           UI.error(ex)
-          UI.message("Something failed... trying again to recover")
+          UI.message('Something failed... trying again to recover')
         end
         if WatchBuild.config[:sample_only_once] == false
           sleep 30
@@ -57,19 +62,19 @@ module WatchBuild
       require 'terminal-notifier'
 
       if build.nil?
-        UI.message "Application build is still processing"
+        UI.message 'Application build is still processing'
         return
       end
 
       url = "https://itunesconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/app/#{@app.apple_id}/activity/ios/builds/#{build.train_version}/#{build.build_version}/details"
-      TerminalNotifier.notify("Build finished processing",
+      TerminalNotifier.notify('Build finished processing',
                               title: build.app_name,
-                           subtitle: "#{build.train_version} (#{build.build_version})",
-                            execute: "open '#{url}'")
+                              subtitle: "#{build.train_version} (#{build.build_version})",
+                              execute: "open '#{url}'")
 
-      UI.success("Successfully finished processing the build")
+      UI.success('Successfully finished processing the build')
       if minutes > 0 # it's 0 minutes if there was no new build uploaded
-        UI.message("You can now tweet: ")
+        UI.message('You can now tweet: ')
         UI.important("iTunes Connect #iosprocessingtime #{minutes} minutes")
       end
       UI.message(url)
@@ -84,16 +89,14 @@ module WatchBuild
     def find_build
       build = nil
       app.latest_version.candidate_builds.each do |b|
-        if !build or b.upload_date > build.upload_date
-          build = b
-        end
+        build = b if !build || b.upload_date > build.upload_date
       end
 
       unless build
         UI.user_error!("No processing builds available for app #{WatchBuild.config[:app_identifier]}")
       end
 
-      return build
+      build
     end
   end
 end

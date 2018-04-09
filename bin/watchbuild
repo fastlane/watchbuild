@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$:.push File.expand_path("../../lib", __FILE__)
+$LOAD_PATH.push File.expand_path('../../lib', __FILE__)
 
 require 'watchbuild'
 require 'commander'
@@ -29,7 +29,7 @@ class WatchBuildApplication
       c.syntax = 'watchbuild'
       c.description = 'Renews the certificate (in case it expired) and outputs the path to the generated file'
 
-      c.action do |args, options|
+      c.action do |_args, options|
         WatchBuild.config = FastlaneCore::Configuration.create(WatchBuild::Options.available_options, options.__hash__)
         WatchBuild::Runner.new.run
       end
