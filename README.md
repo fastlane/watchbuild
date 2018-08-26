@@ -33,6 +33,8 @@ WatchBuild
 ###### Get a notification once your iTunes Connect build is finished processing
 
 <img src=".assets/screenshot.png" width=350>
+<br>
+<img src=".assets/slack-screenshot.png" width=350>
 
 When you upload a new binary from Xcode to iTunes Connect, you have to wait until it's done processing before you can submit it to the App Store.
 
@@ -75,6 +77,10 @@ Make sure, you have the latest version of the Xcode command line tools installed
 You can pass your bundle identifier and username like this:
 
     watchbuild -a com.krausefx.app -u felix@krausefx.com
+
+You can also include a Slack webhook url for notifications via Slack:
+
+    watchbuild -a com.krausefx.app -u felix@krausefx.com -n https://hooks.slack.com/services/<your-webhook>
 
 For a list of available parameters and commands run
 

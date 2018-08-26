@@ -39,7 +39,13 @@ module WatchBuild
         FastlaneCore::ConfigItem.new(key: :sample_only_once,
                                      description: 'Only check for the build once, instead of waiting for it to process',
                                      is_string: false,
-                                     default_value: false)
+                                     default_value: false),
+        FastlaneCore::ConfigItem.new(key: :slack_url,
+                                     short_option: '-n',
+                                     env_name: 'SLACK_URL',
+                                     description: 'Provide a slack webhook URL to notify a channel of a build',
+                                     is_string: true,
+                                     default_value: "")                             
       ]
     end
   end
