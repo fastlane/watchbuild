@@ -30,23 +30,23 @@ WatchBuild
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/fastlane/watchbuild/blob/master/LICENSE)
 [![Gem](https://img.shields.io/gem/v/watchbuild.svg?style=flat)](http://rubygems.org/gems/watchbuild)
 
-###### Get a notification once your iTunes Connect build is finished processing
+###### Get a notification once your App Store Connect build is finished processing
 
 <img src=".assets/screenshot.png" width=350>
 
-When you upload a new binary from Xcode to iTunes Connect, you have to wait until it's done processing before you can submit it to the App Store.
+When you upload a new binary from Xcode to App Store Connect, you have to wait until it's done processing before you can submit it to the App Store.
 
-As the [#iosprocessingtime](https://twitter.com/search?q=%23iosprocessingtime) varies from a few minutes to multiple hours, it's easy to forget to check iTunes Connect to see if the build is ready. WatchBuild lets you know as soon as it is done.
+As the [#iosprocessingtime](https://twitter.com/search?q=%23iosprocessingtime) varies from a few minutes to multiple hours, it's easy to forget to check App Store Connect to see if the build is ready. WatchBuild lets you know as soon as it is done.
 
-WatchBuild is a simple standalone tool that shows a notification once your newly uploaded build was successfully processed by iTunes Connect.
+WatchBuild is a simple standalone tool that shows a notification once your newly uploaded build was successfully processed by App Store Connect.
 
-Once the build is ready to be pushed to TestFlight or for review, you get a macOS notification. You can even directly click on the notification to open the build on iTunes Connect.
+Once the build is ready to be pushed to TestFlight or for review, you get a macOS notification. You can even directly click on the notification to open the build on App Store Connect.
 
 ### Why use WatchBuild?
 
 WatchBuild is a standalone tool and can be used without any of the other [fastlane tools](https://fastlane.tools). This is *big*, since you can use WatchBuild also if you use Xcode to upload your app.
 
-This tool is not a replacement for [deliver](https://github.com/fastlane/fastlane/tree/master/deliver) (Upload metadata and builds to iTunes Connect) or [pilot](https://github.com/fastlane/fastlane/tree/master/pilot) (Upload and distribute new builds to TestFlight), but is meant as a small helpful utility with the main purpose to wait for the binary processing to be finished.
+This tool is not a replacement for [deliver](https://github.com/fastlane/fastlane/tree/master/deliver) (Upload metadata and builds to App Store Connect) or [pilot](https://github.com/fastlane/fastlane/tree/master/pilot) (Upload and distribute new builds to TestFlight), but is meant as a small helpful utility with the main purpose to wait for the binary processing to be finished.
 
 Get in contact with the developer on Twitter: [@FastlaneTools](https://twitter.com/FastlaneTools)
 
@@ -95,9 +95,9 @@ For a list of available parameters and commands run
 - [`frameit`](https://github.com/fastlane/fastlane/tree/master/frameit): Quickly put your screenshots into the right device frames
 - [`pem`](https://github.com/fastlane/fastlane/tree/master/pem): Automatically generate and renew your push notification profiles
 - [`sigh`](https://github.com/fastlane/fastlane/tree/master/sigh): Because you would rather spend your time building stuff than fighting provisioning
-- [`produce`](https://github.com/fastlane/fastlane/tree/master/produce): Create new iOS apps on iTunes Connect and Dev Portal using the command line
+- [`produce`](https://github.com/fastlane/fastlane/tree/master/produce): Create new iOS apps on App Store Connect and Dev Portal using the command line
 - [`cert`](https://github.com/fastlane/fastlane/tree/master/cert): Automatically create and maintain iOS code signing certificates
-- [`spaceship`](https://github.com/fastlane/fastlane/tree/master/spaceship): Ruby library to access the Apple Dev Center and iTunes Connect
+- [`spaceship`](https://github.com/fastlane/fastlane/tree/master/spaceship): Ruby library to access the Apple Dev Center and App Store Connect
 - [`pilot`](https://github.com/fastlane/fastlane/tree/master/pilot): The best way to manage your TestFlight testers and builds from your terminal
 - [`boarding`](https://github.com/fastlane/boarding): The easiest way to invite your TestFlight beta testers
 - [`gym`](https://github.com/fastlane/fastlane/tree/master/gym): Building your iOS apps has never been easier

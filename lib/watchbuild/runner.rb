@@ -44,7 +44,7 @@ module WatchBuild
             time_elapsed = Time.at(seconds_elapsed).utc.strftime '%H:%M:%S hours'
           end
 
-          UI.message("Waiting #{time_elapsed} for iTunes Connect to process the build #{build.train_version} (#{build.build_version})... this might take a while...")
+          UI.message("Waiting #{time_elapsed} for App Store Connect to process the build #{build.train_version} (#{build.build_version})... this might take a while...")
         rescue => ex
           UI.error(ex)
           UI.message('Something failed... trying again to recover')
@@ -66,7 +66,7 @@ module WatchBuild
         return
       end
 
-      url = "https://itunesconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/app/#{@app.apple_id}/activity/ios/builds/#{build.train_version}/#{build.build_version}/details"
+      url = "https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/app/#{@app.apple_id}/activity/ios/builds/#{build.train_version}/#{build.build_version}/details"
       TerminalNotifier.notify('Build finished processing',
                               title: build.app_name,
                               subtitle: "#{build.train_version} (#{build.build_version})",
@@ -75,7 +75,7 @@ module WatchBuild
       UI.success('Successfully finished processing the build')
       if minutes > 0 # it's 0 minutes if there was no new build uploaded
         UI.message('You can now tweet: ')
-        UI.important("iTunes Connect #iosprocessingtime #{minutes} minutes")
+        UI.important("App Store Connect #iosprocessingtime #{minutes} minutes")
       end
       UI.message(url)
     end
