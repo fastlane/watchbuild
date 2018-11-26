@@ -64,7 +64,7 @@ You can pass your bundle identifier and username like this:
 
 You can also include a Slack webhook url for notifications via Slack:
 
-    watchbuild -a com.krausefx.app -u felix@krausefx.com -n https://hooks.slack.com/services/<your-webhook>
+    watchbuild -a com.krausefx.app -u felix@krausefx.com --slack_url https://hooks.slack.com/services/<your-webhook>
 
 For a list of available parameters and commands run
 

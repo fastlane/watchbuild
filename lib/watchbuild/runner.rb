@@ -60,8 +60,6 @@ module WatchBuild
     end
 
     def notification(build, minutes)
-      require 'terminal-notifier'
-
       if build.nil?
         UI.message 'Application build is still processing'
         return
@@ -70,14 +68,9 @@ module WatchBuild
       url = "https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/app/#{@app.apple_id}/activity/ios/builds/#{build.train_version}/#{build.build_version}/details"
 
       if !ENV['SLACK_URL'].empty?
-        notify_slack(
-          "App Store build #{build.train_version} (#{build.build_version}) has finished processing in #{minutes} minutes",
-          ENV['SLACK_URL'])
+        notify_slack(build, minutes, ENV['SLACK_URL'])
       else
-        TerminalNotifier.notify('Build finished processing',
-                              title: build.app_name,
-                              subtitle: "#{build.train_version} (#{build.build_version})",
-                              execute: "open '#{url}'")
+        notify_terminal(build, minutes, url)
       end
 
       UI.success('Successfully finished processing the build')
@@ -94,12 +87,13 @@ module WatchBuild
       @app ||= Spaceship::Application.find(WatchBuild.config[:app_identifier])
     end
 
-    def notify_slack(message, url)
+    def notify_slack(build, minutes, url)
       require 'net/http'
       require 'uri'
       require 'json'
 
-      slack_url = uri = URI.parse(url)
+      message = "App Store build #{build.train_version} (#{build.build_version}) has finished processing in #{minutes} minutes"
+      slack_url = URI.parse(url)
       slack_message = {
         "text": message
       }
@@ -108,7 +102,6 @@ module WatchBuild
   
       http = Net::HTTP.new(slack_url.host, slack_url.port)
       http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       request = Net::HTTP::Post.new(slack_url.request_uri, header)
       request.body = slack_message.to_json
       response = http.request(request)
@@ -118,6 +111,15 @@ module WatchBuild
       else
         UI.user_error!('Error sending Slack notification.')
       end
+    end
+
+    def notify_terminal(build, minutes, url)
+    	require 'terminal-notifier'
+
+    	TerminalNotifier.notify('Build finished processing',
+                              title: build.app_name,
+                              subtitle: "#{build.train_version} (#{build.build_version})",
+                              execute: "open '#{url}'")
     end
 
     def find_build
