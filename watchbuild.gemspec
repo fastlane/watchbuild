@@ -30,8 +30,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.1.0'
   spec.add_development_dependency 'rspec_junit_formatter', '~> 0.2.3'
   spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'yard', '~> 0.8.7.4'
+  spec.add_development_dependency 'yard', '>= 0.9.11'
   spec.add_development_dependency 'webmock', '~> 1.19.0'
   spec.add_development_dependency 'coveralls'
-  spec.add_development_dependency 'rubocop', '~> 0.44.0'
+  spec.add_development_dependency 'rubocop', '>= 0.49.0'
 end
