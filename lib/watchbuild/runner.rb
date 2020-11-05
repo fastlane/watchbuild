@@ -67,8 +67,9 @@ module WatchBuild
 
       url = "https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/app/#{@app.apple_id}/activity/ios/builds/#{build.train_version}/#{build.build_version}/details"
 
-      if !ENV['SLACK_URL'].empty?
-        notify_slack(build, minutes, ENV['SLACK_URL'])
+      slack_url = ENV['SLACK_URL'].to_s
+      if !slack_url.empty?
+        notify_slack(build, minutes, slack_url)
       else
         notify_terminal(build, minutes, url)
       end
