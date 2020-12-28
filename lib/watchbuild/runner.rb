@@ -17,8 +17,7 @@ module WatchBuild
       ENV['FASTLANE_ITC_TEAM_NAME'] = WatchBuild.config[:itc_team_name] if WatchBuild.config[:itc_team_name]
       ENV['SLACK_URL'] = WatchBuild.config[:slack_url]
 
-      Spaceship::Tunes.login(WatchBuild.config[:username], nil)
-      Spaceship::Tunes.select_team
+      Spaceship::ConnectAPI.login(WatchBuild.config[:username], nil, use_portal: false, use_tunes: true)
       UI.message('Successfully logged in')
 
       start = Time.now
@@ -33,7 +32,7 @@ module WatchBuild
       loop do
         begin
           build = find_build
-          return build if build.processing == false
+          return build if build.processing? == false
 
           seconds_elapsed = (Time.now - start_time).to_i.abs
           case seconds_elapsed
@@ -65,7 +64,7 @@ module WatchBuild
         return
       end
 
-      url = "https://appstoreconnect.apple.com/WebObjects/iTunesConnect.woa/ra/ng/app/#{@app.apple_id}/activity/ios/builds/#{build.train_version}/#{build.build_version}/details"
+      url = "https://appstoreconnect.apple.com/apps/#{app.apple_id}/testflight/#{app.platform}/#{build.id}/metadata"
 
       slack_url = ENV['SLACK_URL'].to_s
       if !slack_url.empty?
@@ -85,7 +84,7 @@ module WatchBuild
     private
 
     def app
-      @app ||= Spaceship::Application.find(WatchBuild.config[:app_identifier])
+      @app ||= Spaceship::Tunes::Application.find(WatchBuild.config[:app_identifier])
     end
 
     def notify_slack(build, minutes, url)
@@ -118,16 +117,13 @@ module WatchBuild
     	require 'terminal-notifier'
 
     	TerminalNotifier.notify('Build finished processing',
-                              title: build.app_name,
+                              title: app.name,
                               subtitle: "#{build.train_version} (#{build.build_version})",
                               execute: "open '#{url}'")
     end
 
     def find_build
-      build = nil
-      app.latest_version.candidate_builds.each do |b|
-        build = b if !build || b.upload_date > build.upload_date
-      end
+      build = app.all_processing_builds.sort_by(&:upload_date).last
 
       unless build
         UI.user_error!("No processing builds available for app #{WatchBuild.config[:app_identifier]}")
