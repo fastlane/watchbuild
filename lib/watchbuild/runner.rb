@@ -29,10 +29,12 @@ module WatchBuild
     def wait_for_build(start_time)
       UI.user_error!("Could not find app with app identifier #{WatchBuild.config[:app_identifier]}") unless app
 
+      build = nil
+
       loop do
         begin
-          build = find_build
-          return build if build.processing? == false
+          build = find_build(build)
+          return build if build.processed?
 
           seconds_elapsed = (Time.now - start_time).to_i.abs
           case seconds_elapsed
@@ -44,7 +46,7 @@ module WatchBuild
             time_elapsed = Time.at(seconds_elapsed).utc.strftime '%H:%M:%S hours'
           end
 
-          UI.message("Waiting #{time_elapsed} for App Store Connect to process the build #{build.train_version} (#{build.build_version})... this might take a while...")
+          UI.message("Waiting #{time_elapsed} for App Store Connect to process the build #{build.app_version} (#{build.version})... this might take a while...")
         rescue => ex
           UI.error(ex)
           UI.message('Something failed... trying again to recover')
@@ -64,7 +66,9 @@ module WatchBuild
         return
       end
 
-      url = "https://appstoreconnect.apple.com/apps/#{app.apple_id}/testflight/#{app.platform}/#{build.id}/metadata"
+      platform = build.pre_release_version.platform.downcase.gsub('_', '')
+
+      url = "https://appstoreconnect.apple.com/apps/#{app.id}/testflight/#{platform}/#{build.id}/metadata"
 
       slack_url = ENV['SLACK_URL'].to_s
       if !slack_url.empty?
@@ -84,7 +88,7 @@ module WatchBuild
     private
 
     def app
-      @app ||= Spaceship::Tunes::Application.find(WatchBuild.config[:app_identifier])
+      @app ||= Spaceship::ConnectAPI::App.find(WatchBuild.config[:app_identifier])
     end
 
     def notify_slack(build, minutes, url)
@@ -92,7 +96,7 @@ module WatchBuild
       require 'uri'
       require 'json'
 
-      message = "App Store build #{build.train_version} (#{build.build_version}) has finished processing in #{minutes} minutes"
+      message = "App Store build #{build.app_version} (#{build.version}) has finished processing in #{minutes} minutes"
       slack_url = URI.parse(url)
       slack_message = {
         "text": message
@@ -118,12 +122,20 @@ module WatchBuild
 
     	TerminalNotifier.notify('Build finished processing',
                               title: app.name,
-                              subtitle: "#{build.train_version} (#{build.build_version})",
+                              subtitle: "#{build.app_version} (#{build.version})",
                               execute: "open '#{url}'")
     end
 
-    def find_build
-      build = app.all_processing_builds.sort_by(&:upload_date).last
+    # Finds a build if none given
+    # Otherwise fetches a build (to get updated state)
+    def find_build(build)
+      if build.nil?
+        build = app.get_builds(includes: Spaceship::ConnectAPI::Build::ESSENTIAL_INCLUDES).select do |build|
+          build.processing_state == Spaceship::ConnectAPI::Build::ProcessingState::PROCESSING
+        end.sort_by(&:uploaded_date).last
+      else
+        build = Spaceship::ConnectAPI::Build.get(build_id: build.id, includes: Spaceship::ConnectAPI::Build::ESSENTIAL_INCLUDES)
+      end
 
       unless build
         UI.user_error!("No processing builds available for app #{WatchBuild.config[:app_identifier]}")
