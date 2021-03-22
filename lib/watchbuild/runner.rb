@@ -30,23 +30,30 @@ module WatchBuild
       UI.user_error!("Could not find app with app identifier #{WatchBuild.config[:app_identifier]}") unless app
 
       build = nil
+      showed_info = false
 
       loop do
         begin
           build = find_build(build)
-          return build if build.processed?
 
-          seconds_elapsed = (Time.now - start_time).to_i.abs
-          case seconds_elapsed
-          when 0..59
-            time_elapsed = Time.at(seconds_elapsed).utc.strftime '%S seconds'
-          when 60..3599
-            time_elapsed = Time.at(seconds_elapsed).utc.strftime '%M:%S minutes'
+          if build.nil?
+            UI.important("Read more information on why this build isn't showing up yet - https://github.com/fastlane/fastlane/issues/14997") unless showed_info
+            showed_info = true
           else
-            time_elapsed = Time.at(seconds_elapsed).utc.strftime '%H:%M:%S hours'
-          end
+            return build if build.processed?
 
-          UI.message("Waiting #{time_elapsed} for App Store Connect to process the build #{build.app_version} (#{build.version})... this might take a while...")
+            seconds_elapsed = (Time.now - start_time).to_i.abs
+            case seconds_elapsed
+            when 0..59
+              time_elapsed = Time.at(seconds_elapsed).utc.strftime '%S seconds'
+            when 60..3599
+              time_elapsed = Time.at(seconds_elapsed).utc.strftime '%M:%S minutes'
+            else
+              time_elapsed = Time.at(seconds_elapsed).utc.strftime '%H:%M:%S hours'
+            end
+
+            UI.message("Waiting #{time_elapsed} for App Store Connect to process the build #{build.app_version} (#{build.version})... this might take a while...")
+          end
         rescue => ex
           UI.error(ex)
           UI.message('Something failed... trying again to recover')
@@ -138,7 +145,7 @@ module WatchBuild
       end
 
       unless build
-        UI.user_error!("No processing builds available for app #{WatchBuild.config[:app_identifier]}")
+        UI.error("No processing builds available for app #{WatchBuild.config[:app_identifier]} - this may take a few minutes (check your email for processing issues if this continues)")
       end
 
       build
