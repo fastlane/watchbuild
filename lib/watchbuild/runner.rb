@@ -137,9 +137,25 @@ module WatchBuild
     # Otherwise fetches a build (to get updated state)
     def find_build(build)
       if build.nil?
-        build = app.get_builds(includes: Spaceship::ConnectAPI::Build::ESSENTIAL_INCLUDES).select do |build|
+        builds = app.get_builds(includes: Spaceship::ConnectAPI::Build::ESSENTIAL_INCLUDES).select do |build|
           build.processing_state == Spaceship::ConnectAPI::Build::ProcessingState::PROCESSING
-        end.sort_by(&:uploaded_date).last
+        end
+
+        # Filter specific app_verison if specified
+        if (app_version = WatchBuild.config[:app_version])
+          builds = builds.select do |build|
+            build.app_version.to_s == app_version.to_s
+          end
+        end
+
+        # Filter specific app_build_number if specified
+        if (app_build_number = WatchBuild.config[:app_build_number])
+          builds = builds.select do |build|
+            build.version.to_s == app_build_number.to_s
+          end
+        end
+
+        build = builds.sort_by(&:uploaded_date).last
       else
         build = Spaceship::ConnectAPI::Build.get(build_id: build.id, includes: Spaceship::ConnectAPI::Build::ESSENTIAL_INCLUDES)
       end
