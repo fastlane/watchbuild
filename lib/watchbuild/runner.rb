@@ -141,8 +141,6 @@ module WatchBuild
           build.processing_state == Spaceship::ConnectAPI::Build::ProcessingState::PROCESSING
         end
 
-        puts "builds: #{builds.size}"
-
         # Filter specific app_verison if specified
         if (app_version = WatchBuild.config[:app_version])
           builds = builds.select do |build|
