@@ -8,7 +8,7 @@ module WatchBuild
     # returns the path the newly created provisioning profile (in /tmp usually)
     def run
       FastlaneCore::PrintTable.print_values(config: WatchBuild.config,
-                                            hide_keys: [],
+                                            hide_keys: [:apple_key_id,:apple_issuer_id,:apple_keyfile_path],
                                             title: "Summary for WatchBuild #{WatchBuild::VERSION}")
 
       UI.message("Starting login with user '#{WatchBuild.config[:username]}'")
