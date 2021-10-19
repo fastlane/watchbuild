@@ -17,7 +17,7 @@ module WatchBuild
       ENV['FASTLANE_ITC_TEAM_NAME'] = WatchBuild.config[:itc_team_name] if WatchBuild.config[:itc_team_name]
       ENV['SLACK_URL'] = WatchBuild.config[:slack_url]
 
-      Spaceship::ConnectAPI.login(WatchBuild.config[:username], nil, use_portal: false, use_tunes: true)
+      Spaceship::ConnectAPI.auth(key_id: "", issuer_id: "", filepath: "", key: nil, duration: nil, in_house: nil)
       UI.message('Successfully logged in')
 
       start = Time.now
